@@ -22,8 +22,9 @@ const List = styled.div`
 
 function MovieList() {
   const [data, setData] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const target = useRef();
+  console.log(`초기값은 ${page} 입니다`); // ! 왜 2,3,4 등 랜덤하게 나올까,,? 1을 의도했는데
 
   // 초기 화면 렌더링 시, page 1 데이터 불러오기
   fetch(
@@ -35,37 +36,30 @@ function MovieList() {
     })
     .catch((err) => console.error(err));
 
-  // 페이지 수에 맞추어 데이터 fetch 요청하기
+  // Intersection observer 설정
 
-  // 관측 -> 페이지 수 증가 시, 데이터 fetch 요청 호출하기
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
-    )
-      .then((res) => res.json)
-      .then((res) => setData(...data, res.results))
-      .catch((err) => console.error(err));
-  }, [page]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prevPage) => prevPage + 1);
+          console.log(page);
+        }
+      },
+      { root: null, threshold: 0.1 }
+    );
 
-  // 관측될 시, 페이지 수를 올려줄 함수 작성
+    if (target.current) {
+      observer.observe(target.current);
+    }
+    const targetElement = target.current;
 
-  // intersection observer 작성
-  // const pageEnd = useRef();
-  // useEffect(() => {
-  //   const loadMore = () => {
-  //     setPage(page + 1);
-  //   };
-
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       if (entries[0].isIntersecting) {
-  //         loadMore();
-  //       }
-  //     },
-  //     { threshold: 1 }
-  //   );
-  //   observer.observe(pageEnd.current);
-  // }, [page]);
+    return () => {
+      if (targetElement) {
+        observer.unobserve(targetElement);
+      }
+    };
+  }, [page, target]);
 
   return (
     <div>
@@ -73,7 +67,7 @@ function MovieList() {
       <Container>
         {data &&
           data.map((el) => (
-            <List>
+            <List key={el.id}>
               <div className="title">{el.original_title}</div>
               <img
                 className="poster"
@@ -84,7 +78,7 @@ function MovieList() {
             </List>
           ))}
       </Container>
-      <Loading />
+      <div ref={target}> div 입니다</div>
     </div>
   );
 }
