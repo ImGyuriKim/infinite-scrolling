@@ -24,7 +24,6 @@ function MovieList() {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const target = useRef();
-  console.log(`초기값은 ${page} 입니다`); // ! 왜 2,3,4 등 랜덤하게 나올까,,? 1을 의도했는데
 
   // 초기 화면 렌더링 시, page 1 데이터 불러오기
   fetch(
@@ -59,7 +58,19 @@ function MovieList() {
         observer.unobserve(targetElement);
       }
     };
-  }, [page, target]);
+  }, []);
+
+  // page 수 증가 시, fetch 요청 작성
+  // useEffect(() => {
+  //   fetch(
+  //     `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((response) => {
+  //       setData((prevData) => [...prevData, response.results]);
+  //     })
+  //     .catch((err) => console.error(err));
+  // }, [page, data]);
 
   return (
     <div>
