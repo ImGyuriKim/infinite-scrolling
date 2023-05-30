@@ -25,17 +25,21 @@ function MovieList() {
   const [page, setPage] = useState(1);
   const target = useRef();
 
-  // 초기 화면 렌더링 시, page 1 데이터 불러오기
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_API_KEY}`
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        setData(response.results);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  // 첫 렌더링 + page 수 증가 시, fetch 요청 작성
+  useEffect(
+    () => async () => {
+      await fetch(
+        `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
+      )
+        .then((response) => response.json())
+        .then((response) => {
+          setData((prevData) => [...prevData, ...response.results]);
+        })
+        .catch((err) => console.error(err));
+    },
+
+    [page]
+  );
 
   // Intersection observer 설정
   useEffect(() => {
@@ -60,22 +64,6 @@ function MovieList() {
     };
   }, []);
 
-  // page 수 증가 시, fetch 요청 작성
-  useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_API_KEY}&page=${page}`
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        setData((prevData) => [...prevData, ...response.results]);
-        console.log(response.results);
-      })
-      .catch((err) => console.error(err));
-  }, [page]);
-
-  if (page === 3) {
-    console.log(data);
-  }
   return (
     <div>
       <h1>영화 리스트</h1>
