@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { forwardRef, useEffect } from "react";
 import styled from "styled-components";
 import { useState, useRef } from "react";
-import Loading from "./Loading";
+import { Oval } from "react-loader-spinner";
 
 const Container = styled.div`
   display: flex;
@@ -19,6 +19,15 @@ const List = styled.div`
     width: 15em;
   }
 `;
+
+// 로딩 컴포넌트, target 역할
+const Loading = forwardRef((props, ref) => {
+  return (
+    <Container ref={ref}>
+      <Oval color="#ff0000" height={100} width={100} />
+    </Container>
+  );
+});
 
 function MovieList() {
   const [data, setData] = useState([]);
@@ -81,7 +90,7 @@ function MovieList() {
             </List>
           ))}
       </Container>
-      <div ref={target}> div 입니다</div>
+      <Loading ref={target} />
     </div>
   );
 }
