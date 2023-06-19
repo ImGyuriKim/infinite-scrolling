@@ -1,24 +1,67 @@
-import React, { useEffect } from "react";
+import React, { forwardRef, useEffect } from "react";
 import styled from "styled-components";
 import { useState, useRef } from "react";
-import Loading from "./Loading";
+import { Oval } from "react-loader-spinner";
+import { AiOutlineDownCircle } from "react-icons/ai";
+import { BiMoviePlay } from "react-icons/bi";
 
 const Container = styled.div`
   display: flex;
-  width: 70em;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  background-color: lightgrey;
+  width: 85vw;
   flex-wrap: wrap;
+  box-shadow: 3px 3px 3px 3px grey;
+  border-radius: 10px;
 `;
 
 const List = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 20vw;
+  height: 50vh;
+  margin: 4px;
+
   .title {
-    font-size: larger;
+    text-align: center;
+    font-size: 20px;
     font-weight: bold;
   }
 
   .poster {
-    width: 15em;
+    width: 15vw;
+    height: 40vh;
+    align-items: center;
+  }
+
+  &:hover {
+    background-color: grey;
+    border-radius: 5px;
+    cursor: pointer;
+    .poster {
+      box-shadow: 5px 5px 5px black;
+      width: 17vw;
+      height: 43vh;
+    }
+    .title {
+      font-weight: bolder;
+      text-shadow: 2px 2px 2px grey;
+    }
   }
 `;
+
+// 로딩 컴포넌트, target 역할
+const Loading = forwardRef((props, ref) => {
+  return (
+    <Container ref={ref}>
+      <Oval color="#ff0000" height={80} width={80} />
+    </Container>
+  );
+});
 
 function MovieList() {
   const [data, setData] = useState([]);
@@ -66,7 +109,13 @@ function MovieList() {
 
   return (
     <div>
-      <h1>영화 리스트</h1>
+      <h1>Movies</h1>
+      <p>
+        <AiOutlineDownCircle /> scroll down to see more movies
+      </p>
+      <p>
+        <BiMoviePlay /> click the movie card to see the details
+      </p>
       <Container>
         {data &&
           data.map((el) => (
@@ -81,7 +130,7 @@ function MovieList() {
             </List>
           ))}
       </Container>
-      <div ref={target}> div 입니다</div>
+      <Loading ref={target} />
     </div>
   );
 }
