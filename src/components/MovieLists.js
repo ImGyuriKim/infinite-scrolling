@@ -1,4 +1,5 @@
 import React, { forwardRef, useEffect } from "react";
+import Modal from "./Modal";
 import styled from "styled-components";
 import { useState, useRef } from "react";
 import { Oval } from "react-loader-spinner";
@@ -63,10 +64,14 @@ const Loading = forwardRef((props, ref) => {
   );
 });
 
-function MovieList() {
+function MovieLists() {
+  // 영화 데이터 상태관리
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const target = useRef();
+
+  // 모달 상태관리
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 첫 렌더링 + page 수 증가 시, fetch 요청 작성
   useEffect(
@@ -135,4 +140,4 @@ function MovieList() {
   );
 }
 
-export default MovieList;
+export default MovieLists;
