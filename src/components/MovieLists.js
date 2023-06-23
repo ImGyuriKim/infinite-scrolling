@@ -71,7 +71,9 @@ function MovieLists() {
   const target = useRef();
 
   // 모달 상태관리
+  const [selectedMovie, setSelectedMovie] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   // 첫 렌더링 + page 수 증가 시, fetch 요청 작성
   useEffect(
@@ -124,7 +126,10 @@ function MovieLists() {
       <Container>
         {data &&
           data.map((el) => (
-            <List key={el.id}>
+            <List key={el.id} onClick={() => {
+            setSelectedMovie(el)
+            setIsModalOpen(true)
+            }}>
               <div className="title">{el.original_title}</div>
               <img
                 className="poster"
@@ -132,9 +137,10 @@ function MovieLists() {
                 src={`https://www.themoviedb.org/t/p/w440_and_h660_face/${el.poster_path}`}
                 alt={el.original_title}
               ></img>
-            </List>
+            </List> 
           ))}
       </Container>
+      {isModalOpen && selectedMovie && <Modal movieData={selectedMovie} setIsModalOpen={setIsModalOpen}/>}
       <Loading ref={target} />
     </div>
   );
